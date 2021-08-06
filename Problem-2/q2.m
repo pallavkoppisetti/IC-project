@@ -1,9 +1,11 @@
 % Problem 2 : Error probability of random codes over a BSC channel
 
+global plot_points;
+
 % Given parameters.
 n = 15;
 k = 10;
-p = 0.015;
+p = 0.1;
 N = 1000;
 
 % Stores the probability of decoding error as E/N
@@ -25,6 +27,21 @@ for tt = 1:5
         % Simulating BSC with trasmitted codeword c and received codeword y
         % with bit-flip probability p.
         y = BSC(c,p);
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % If p > 0.5, a bit flip is more likely than no bit flip.
+        % So, minimum Hamming distance decoding won't work in such cases.
+        % So, we flip the bits of y and then employ the decoding.
+        if p > 0.5
+            for dd = 1:length(y)
+                if y(dd) == '0'
+                    y(dd) = '1';
+                else
+                    y(dd) = '0';
+                end
+            end
+        end
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % Indicator variable : 1 if decoder makes error, 0 if no decoding error
         I = 0;
@@ -57,8 +74,4 @@ fprintf("\n Rate of Code = %g\n", log2(height(C))/n);
 fprintf("\n BSC Channel Capacity = 1 - H_2(%g) = %g\n",p, 1 + p*log2(p) + (1-p)*log2(1-p));
 fprintf("\n Minimum average probability of error = %g\n", P_E);
 
-figure(1);
-stem(p,P_E,'b');
-xlim([0 1]);
-ylim([0 1]);
-hold on;
+plot_points = [plot_points P_E];
