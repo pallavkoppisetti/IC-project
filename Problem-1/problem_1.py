@@ -1,9 +1,11 @@
 #import our classes and required functions from the mentioned libraries
 from huffman_encode import huffmantree,EncodeTable,heapnode
 from collections import defaultdict
+import time
 from huffman_decode import Decoder
 
 filename='File_1.txt'
+ 
 # Defining a dictionary for storing the frequency values ,that initializes values to their null value if the key doesnt exist
 freq = defaultdict(int)
 
@@ -20,12 +22,24 @@ leafnodes=[]
 for keys,values in freq.items():
     leafnodes.append(heapnode(values,keys))
 
+
+start_time1=time.time() # for finding out execution time
+
 # The function returns the root node of the huffman tree 
 root=huffmantree(leafnodes)
 
 # Dictionary that stores the codewords for each corresponding symbol
 encodeTable={}
 EncodeTable(encodeTable,root)
+
+
+# Outputting our encoded file as Encoded_file.txt
+with open(filename, 'r') as f, open('Encoded_file.txt', 'w') as outfile:
+    for line in f:
+        for char in line:
+            outfile.write(encodeTable[char])
+
+end_time1=time.time()
 
 # printing out the symbols in our text file and its corresponding codeword
 for keys,values in encodeTable.items():
@@ -43,14 +57,9 @@ print(f"\nThe size of our encoded file-->{size}")
 print(f"\nThe size of our text file-->{original_size*8}")
 
 
-# Outputting our encoded file as Encoded_file.txt
-with open(filename, 'r') as f, open('Encoded_file.txt', 'w') as outfile:
-    for line in f:
-        for char in line:
-            outfile.write(encodeTable[char])
-
-
 ## Decoding of our encoded text file 
+start_time2=time.time() #for timing our process
+
 decoded_message=''
 encoded_message=''
 
@@ -62,7 +71,8 @@ with open('Encoded_file.txt', 'r') as f, open('Decoded_file.txt', 'w') as outfil
             encoded_message+=char    
     decoded_message=Decoder(root,encoded_message)
     outfile.write(decoded_message)
-    
+
+end_time2=time.time()
 # Code snippet to check for decoding errors
 message=''
 
@@ -78,8 +88,10 @@ if message==decoded_message:
 else:
     print('\nError in the decoding!')
 
+# Printing the execution time for encoding and decoding
 
-
+print(f"\nThe execution time taken for encoding: {end_time1-start_time1}")
+print(f"\nThe execution time taken for decoding: {end_time2-start_time2}")
 
      
 
