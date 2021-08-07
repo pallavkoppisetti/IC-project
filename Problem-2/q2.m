@@ -5,7 +5,7 @@ global plot_points;
 % Given parameters.
 n = 15;
 k = 10;
-p = 0.1;
+p = 0.015;
 N = 1000;
 
 % Stores the probability of decoding error as E/N
